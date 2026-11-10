@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="page-number" content="6">
+  <title>Gap Analysis | AI Military Career Navigator</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/site.js"></script>
+  <style>
+    .stepbar { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px; }
+    .stepbar a { font-size:.85rem; padding:6px 12px; border-radius:999px; border:1px solid var(--border, #e2e6ee); background:#fff; text-decoration:none; color:inherit; }
+    .stepbar a.current { background:var(--primary, #1f4e8c); color:#fff; border-color:transparent; font-weight:700; }
+    .gap-card { background:#fff; border:1px solid var(--border, #e2e6ee); border-radius:14px; padding:22px; margin:0 0 18px; }
+    .gap-card h3 { margin:0 0 8px; }
+    .gap-card ul { margin:8px 0 0 20px; }
+    .picker { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+    .picker select { padding:10px; border:1px solid var(--border, #e2e6ee); border-radius:10px; background:#fff; }
+    .nav-bottom { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:26px; }
+    .fine { font-size:.85rem; opacity:.8; }
+  </style>
+</head>
+<body>
+<div class="top-strip"><div class="container"><span>STUDENT PRACTICUM PROJECT · INSS 780-557</span><span id="accountState">Demo mode · No real user accounts</span></div></div>
+
+<header class="site-header"><div class="container nav-row">
+  <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo.svg" width="48" height="48" alt=""><span><strong>AI Military<br>Career Navigator</strong><small>From service to opportunity</small></span></a>
+  <button id="menuToggle" class="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  <nav class="nav-links" id="mainNav" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="military-profile.html">Military Profile</a>
+    <a href="career-recommendations.html">Career Recommendations</a>
+    <div class="nav-actions"><a class="btn btn-outline" href="login.html">Log In</a><a class="btn btn-primary" href="signup.html">Sign Up</a></div>
+  </nav>
+</div></header>
+
+<main class="page-main"><div class="container">
+  <nav class="stepbar" aria-label="Progress">
+    <a href="index.html">1. Home</a>
+    <a href="military-profile.html">2. Military Profile</a>
+    <a href="education-preferences.html">3. Education</a>
+    <a href="skills-translation.html">4. Skills</a>
+    <a href="career-recommendations.html">5. Careers</a>
+    <a href="gap-analysis.html" class="current" aria-current="page">6. Gap Analysis</a>
+    <a href="training-recommendations.html">7. Training</a>
+    <a href="career-pathway.html">8. Pathway</a>
+  </nav>
+
+  <div class="page-heading">
+    <span class="eyebrow">Page 6 of 8 · Gap Analysis</span>
+    <h1>Skill &amp; Qualification Gap Analysis</h1>
+    <p>See how your background compares with what your selected career typically asks for.</p>
+  </div>
+
+  <div class="form-card" id="careerHeader"></div>
+  <div id="analysis" style="margin-top:18px"></div>
+
+  <div class="nav-bottom">
+    <a class="btn btn-outline" href="career-recommendations.html">← Back: Career Recommendations</a>
+    <a class="btn btn-primary" id="nextBtn" href="training-recommendations.html">Next: Training Recommendations →</a>
+  </div>
+  <p class="fine" style="margin-top:18px">Illustrative sample content, not verified O*NET occupational data.</p>
+</div></main>
+
+<footer class="footer"><div class="container footer-inner"><div><strong>AI Military<br>Career Navigator</strong><small>Student prototype. Use fictional test profiles only; this demo is not a production account system and does not provide verified career advice.</small></div><span class="footer-flag">INSS 780-557 · Group 1</span></div></footer>
+
+<script>
+  const PROFILE_KEY = "careerNav.militaryProfile.v1";
+  const SELECTED_KEY = "careerNav.selectedCareer.v1";
+
+  const GAP_DATA = {
+    "cybersecurity-analyst": {
+      title:"Cybersecurity Analyst",
+      qualificationsNeeded:["SOC monitoring experience (or equivalent exposure)","Basic understanding of SIEM concepts","Knowledge of incident response workflows","Networking fundamentals (TCP/IP, DNS, routing)"],
+      existingSkills:["Following procedures and maintaining operational security habits","Troubleshooting mindset and structured diagnostics","Team coordination under time pressure"],
+      missingSkills:["Hands-on SIEM usage (e.g., log filtering, alert triage)","Incident response playbooks (detection → containment → recovery)","Writing clear technical incident summaries"],
+      educationGaps:["May need foundational coursework in networking + security concepts","If no formal training exists, consider a structured entry pathway"],
+      certificationRequirements:["CompTIA Security+ (common entry credential)","Optional: Security-related labs or a beginner SOC training track"],
+      recommendedNextSteps:["Complete a basic networking/security refresher (2–4 weeks)","Build a mini-lab: log parsing + alert triage practice","Create a short portfolio of incident writeups"]
+    },
+    "network-engineer": {
+      title:"Network Engineer",
+      qualificationsNeeded:["Strong routing/switching fundamentals","Ability to troubleshoot connectivity and performance issues","Knowledge of network security basics","Familiarity with network documentation"],
+      existingSkills:["Practical systems troubleshooting experience","Comfort with configuration checks and maintenance routines","Structured approach to diagnosing faults"],
+      missingSkills:["Hands-on experience with common routing protocols","Performance monitoring tooling (latency, throughput, packet loss)","Modern network automation basics (optional)"],
+      educationGaps:["May require formal study of networking concepts if exposure was limited","Recommended: targeted learning focused on routing/switching"],
+      certificationRequirements:["CompTIA Network+ (entry credential)","Optional: vendor certifications or CCNA path"],
+      recommendedNextSteps:["Follow a routing/switching learning plan","Use a lab environment to practice configurations","Document troubleshooting scenarios like a real engineering log"]
+    },
+    "operations-logistics": {
+      title:"Operations & Logistics Specialist",
+      qualificationsNeeded:["Planning and scheduling expertise","Inventory / resource coordination understanding","Process improvement and reporting skills","Basic analytics (spreadsheets, KPIs)"],
+      existingSkills:["Operational planning experience under real constraints","Coordination and time-management habits","Process discipline and compliance awareness"],
+      missingSkills:["Advanced Excel/Sheets and KPI reporting","Supply chain terminology and planning frameworks","Formal root-cause analysis techniques (basic)"],
+      educationGaps:["May need structured learning in supply chain basics","Optional: coursework in operations management"],
+      certificationRequirements:["APICS/ASCM entry paths (optional depending on employer)","Could start with general supply chain training"],
+      recommendedNextSteps:["Build a KPI dashboard template in spreadsheets","Practice mapping a process and identifying bottlenecks","Create a sample logistics improvement proposal"]
+    },
+    "project-manager": {
+      title:"Project Manager (Technical/Operations)",
+      qualificationsNeeded:["Project planning and stakeholder coordination skills","Risk management and execution tracking","Documentation and progress reporting ability","Familiarity with agile or structured delivery methods"],
+      existingSkills:["Experience leading execution and managing priorities","Comfort coordinating teams and resources","Accountability and structured reporting habits"],
+      missingSkills:["Formal project management frameworks (agile/waterfall)","Estimating, scheduling, and change control processes","Project documentation templates and tooling"],
+      educationGaps:["May need training in project management concepts","Optional: short course on PM basics + deliverables"],
+      certificationRequirements:["CAPM (entry-level) or equivalent training path","Optional: PMP later with experience"],
+      recommendedNextSteps:["Take a PM fundamentals course","Create a sample project plan (scope, milestones, risks)","Practice writing status reports"]
+    }
+  };
+
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+  function loadProfile() {
+    try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}"); } catch (e) { return {}; }
+  }
+
+  function getCareerId() {
+    const q = new URLSearchParams(window.location.search).get("career");
+    if (q && GAP_DATA[q]) return q;
+    try { const s = localStorage.getItem(SELECTED_KEY); if (s && GAP_DATA[s]) return s; } catch (e) {}
+    return null;
+  }
+
+  function listCard(title, items) {
+    const d = document.createElement("section");
+    d.className = "gap-card";
+    d.innerHTML = '<h3>' + esc(title) + '</h3><ul>' + items.map(x => '<li>' + esc(x) + '</li>').join("") + '</ul>';
+    return d;
+  }
+
+  function render(id) {
+    const head = document.getElementById("careerHeader");
+    const root = document.getElementById("analysis");
+    const data = id && GAP_DATA[id];
+
+    if (!data) {
+      head.innerHTML = '<h3 style="margin-top:0">No career selected</h3><p>Choose a career on the recommendations page to see its gap analysis.</p><a class="btn btn-primary" href="career-recommendations.html">Go to Career Recommendations →</a>';
+      return;
+    }
+
+    try { localStorage.setItem(SELECTED_KEY, id); } catch (e) {}
+
+    const options = Object.keys(GAP_DATA).map(k =>
+      '<option value="' + esc(k) + '"' + (k === id ? " selected" : "") + '>' + esc(GAP_DATA[k].title) + '</option>').join("");
+    head.innerHTML = '<h3 style="margin-top:0">Selected Career: ' + esc(data.title) + '</h3>' +
+      '<p style="margin:0">Review the qualification and skill gaps below.</p>' +
+      '<div class="picker"><label for="careerSelect"><strong>Switch career:</strong></label><select id="careerSelect">' + options + '</select></div>';
+    document.getElementById("careerSelect").addEventListener("change", e => {
+      window.location.href = "gap-analysis.html?career=" + encodeURIComponent(e.target.value);
+    });
+
+    const p = loadProfile();
+    const mine = String(p.skills || "").split(/[,;\n]/).map(s => s.trim()).filter(Boolean).slice(0, 6);
+    if (mine.length) root.appendChild(listCard("Skills From Your Military Profile", mine));
+
+    root.appendChild(listCard("Qualifications Needed", data.qualificationsNeeded));
+    root.appendChild(listCard("Existing Skills (You Have)", data.existingSkills));
+    root.appendChild(listCard("Missing Skills (Gap)", data.missingSkills));
+    root.appendChild(listCard("Education Gaps", data.educationGaps));
+    root.appendChild(listCard("Certification Requirements", data.certificationRequirements));
+    root.appendChild(listCard("Recommended Next Steps", data.recommendedNextSteps));
+
+    document.getElementById("nextBtn").href = "training-recommendations.html?career=" + encodeURIComponent(id);
+  }
+
+  render(getCareerId());
+</script>
+</body>
+</html>
