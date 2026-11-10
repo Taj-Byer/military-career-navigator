@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="page-number" content="5">
+<title>Career Recommendations | AI Military Career Navigator</title>
+<link rel="stylesheet" href="assets/site.css">
+<script defer src="assets/site.js"></script>
+<style>
+.stepbar { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px; }
+.stepbar a { font-size:.85rem; padding:6px 12px; border-radius:999px; border:1px solid var(--border, #e2e6ee); background:#fff; text-decoration:none; color:inherit; }
+.stepbar a.current { background:var(--primary, #1f4e8c); color:#fff; border-color:transparent; font-weight:700; }
+.result-card { background:#fff; border:1px solid var(--border, #e2e6ee); border-radius:14px; padding:22px; margin:0 0 18px; }
+.result-card h3 { margin:6px 0 10px; }
+.score { font-weight:800; }
+.result-card ul { margin:8px 0 0 20px; }
+.result-card p { margin:8px 0; }
+.nav-bottom { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:26px; }
+.fine { font-size:.85rem; opacity:.8; }
+</style>
+</head>
+<body>
+<div class="top-strip"><div class="container"><span>STUDENT PRACTICUM PROJECT · INSS 780-557</span><span id="accountState">Demo mode · No real user accounts</span></div></div>
+<header class="site-header"><div class="container nav-row">
+<a class="brand" href="index.html"><img class="brand-logo" src="assets/logo.svg" width="48" height="48" alt=""><span><strong>AI Military<br>Career Navigator</strong><small>From service to opportunity</small></span></a>
+<button id="menuToggle" class="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+<nav class="nav-links" id="mainNav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="military-profile.html">Military Profile</a>
+<a href="gap-analysis.html">Gap Analysis</a>
+<div class="nav-actions"><a class="btn btn-outline" href="login.html">Log In</a><a class="btn btn-primary" href="signup.html">Sign Up</a></div>
+</nav>
+</div></header>
+<main class="page-main"><div class="container">
+<nav class="stepbar" aria-label="Progress">
+<a href="index.html">1. Home</a>
+<a href="military-profile.html">2. Military Profile</a>
+<a href="education-preferences.html">3. Education</a>
+<a href="skills-translation.html">4. Skills</a>
+<a href="career-recommendations.html" class="current" aria-current="page">5. Careers</a>
+<a href="gap-analysis.html">6. Gap Analysis</a>
+<a href="training-recommendations.html">7. Training</a>
+<a href="career-pathway.html">8. Pathway</a>
+</nav>
+<div class="page-heading">
+<span class="eyebrow">Page 5 of 8 · AI Analysis</span>
+<h1>Career Recommendations</h1>
+<p>Up to three civilian careers that may fit your background. Select one to see its skill and qualification gaps.</p>
+</div>
+<div class="form-card" id="profileCard"></div>
+<h2 style="margin:26px 0 14px">Top 3 Recommendations</h2>
+<div id="results"></div>
+<div class="nav-bottom">
+<a class="btn btn-outline" href="skills-translation.html">← Back: Skills Translation</a>
+<a class="btn btn-primary" href="gap-analysis.html">Next: Gap Analysis →</a>
+</div>
+<p class="fine" style="margin-top:18px">Illustrative examples using simple keyword matching. This page does not run an AI model or use verified ONET data.</p>
+</div></main>
+<footer class="footer"><div class="container footer-inner"><div><strong>AI Military<br>Career Navigator</strong><small>Student prototype. Use fictional test profiles only; this demo is not a production account system and does not provide verified career advice.</small></div><span class="footer-flag">INSS 780-557 · Group 1</span></div></footer>
+<script>
+const PROFILE_KEY = "careerNav.militaryProfile.v1";
+const SELECTED_KEY = "careerNav.selectedCareer.v1";
+const CAREERS = [
+{ id:"cybersecurity-analyst", title:"Cybersecurity Analyst", base:80,
+keywords:["security","cyber","intel","signal","network","it ","information","troubleshoot","25","17c","35"],
+matchExpectation:"Strong alignment with security mindset and troubleshooting.",
+jobDescription:["Monitor networks for threats and suspicious activity","Analyze incidents and recommend mitigations","Assist with security audits and compliance checks"],
+whyMatch:["Transferable experience in risk awareness & procedures","Strong fit if you enjoy investigating and improving systems"] },
+{ id:"network-engineer", title:"Network Engineer", base:78,
+keywords:["network","radio","comm","signal","it ","system","mechanic","maintenance","technical","25"],
+matchExpectation:"Good fit for hands-on configuration, testing, and reliability.",
+jobDescription:["Design and maintain network infrastructure","Configure routing/switching and ensure performance","Troubleshoot connectivity issues and optimize throughput"],
+whyMatch:["Leverages practical systems knowledge and diagnostic skills","Ideal for structured problem-solvers"] },
+{ id:"operations-logistics", title:"Operations & Logistics Specialist", base:76,
+keywords:["logistic","supply","92a","92y","transport","inventory","operations","planning","coordinat"],
+matchExpectation:"Great match for planning, coordinating, and process improvement.",
+jobDescription:["Plan and track logistics operations and schedules","Coordinate resources to meet deadlines","Identify bottlenecks and improve processes"],
+whyMatch:["Maps well to coordination and operational planning experience","Good fit if you excel in organizing complex tasks"] },
+{ id:"project-manager", title:"Project Manager (Technical/Operations)", base:74,
+keywords:["lead","manage","supervis","nco","officer","team","project","e-5","e-6","e-7","o-"],
+matchExpectation:"Potentially high fit if you lead teams and manage deliverables.",
+jobDescription:["Plan projects, track milestones, and manage risks","Coordinate stakeholders and ensure on-time delivery","Create documentation and drive continuous improvement"],
+whyMatch:["Transferable leadership and execution experience","Strong fit for communication + accountability"] }
+];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function loadProfile() {
+try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}"); } catch (e) { return {}; }
+}
+function renderProfile(p) {
+const el = document.getElementById("profileCard");
+if (!(p.branch || p.mos || p.title)) {
+el.innerHTML = '<h3 style="margin-top:0">Your Profile</h3><p>No saved Military Profile was found, so these are general example matches.</p><a class="btn btn-primary" href="military-profile.html">Complete Military Profile →</a>';
+return;
+}
+const bits = [p.branch, p.mos && "MOS/Rate: " + p.mos, p.rank, p.title, p.years && p.years + " yrs", p.status].filter(Boolean).map(esc).join(" · ");
+el.innerHTML = '<h3 style="margin-top:0">Your Profile</h3><p style="margin:0">' + bits + '</p><p style="margin:10px 0 0"><a class="small-link" href="military-profile.html">Edit profile</a></p>';
+}
+// Illustrative heuristic: +3 per keyword found in profile text, capped at +15.
+function score(p) {
+const text = [p.branch,p.mos,p.rank,p.title,p.duties,p.skills].filter(Boolean).join(" ").toLowerCase() + " ";
+return CAREERS.map(c => {
+const hits = c.keywords.filter(k => text.includes(k)).length;
+return Object.assign({}, c, { matchScore: Math.min(98, c.base + Math.min(15, hits * 3)) });
+}).sort((a, b) => b.matchScore - a.matchScore);
+}
+function goToGap(id) {
+try { localStorage.setItem(SELECTED_KEY, id); } catch (e) {}
+window.location.href = "gap-analysis.html?career=" + encodeURIComponent(id);
+}
+function card(c) {
+const d = document.createElement("article");
+d.className = "result-card";
+d.innerHTML =
+'<div><strong>Match Score:</strong> <span class="score">' + c.matchScore + '%</span></div>' +
+'<h3>' + esc(c.title) + '</h3>' +
+'<p><strong>Why it matches:</strong> ' + c.whyMatch.map(esc).join(" · ") + '</p>' +
+'<p><strong>Match expectation:</strong> ' + esc(c.matchExpectation) + '</p>' +
+'<p><strong>Job description:</strong></p><ul>' + c.jobDescription.map(x => '<li>' + esc(x) + '</li>').join("") + '</ul>' +
+'<p style="margin-top:16px"><button type="button" class="btn btn-primary">Select Career →</button></p>';
+d.querySelector("button").addEventListener("click", () => goToGap(c.id));
+return d;
+}
+const profile = loadProfile();
+renderProfile(profile);
+const results = document.getElementById("results");
+score(profile).slice(0, 3).forEach(c => results.appendChild(card(c)));
+</script>
+</body>
+</html>
